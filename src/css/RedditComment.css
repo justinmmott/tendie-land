@@ -1,0 +1,82 @@
+.comment-wrapper {
+  padding-left: 10px;
+  margin-top: 10px;
+  border-left: 2px solid hsla(0, 0%, 100%, 0.1);
+}
+
+.comment {
+  display: grid;
+  grid-template-columns: auto 16vh 2fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "author author author"
+    "body body body "
+    ". bb ."
+    ". replies replies";
+}
+
+.comment-author {
+  grid-area: author;
+  justify-self: start;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.4em;
+  min-width: 100%;
+  margin-bottom: 5px;
+}
+
+.name-flair {
+  display: flex;
+  white-space: nowrap;
+}
+
+.comment-author-flair {
+  background-color: rgb(52, 53, 54);
+  color: rgb(255, 255, 255);
+}
+
+.comment-body {
+  grid-area: body;
+  justify-self: start;
+  text-align: left;
+  font-size: 0.6em;
+  object-fit: cover;
+  max-width: 100%;
+}
+
+.comment-replies {
+  grid-area: replies;
+  justify-self: start;
+  width: 99.8%;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+}
+
+.bottom-bar {
+  grid-area: bb;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  font-size: 1.3rem;
+  margin-top: 5px;
+}
+
+.comment-score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.comment-upvote:hover,
+.comment-downvote:hover,
+.reply:hover, .share:hover {
+  cursor: pointer;
+}
+

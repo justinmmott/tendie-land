@@ -1,0 +1,59 @@
+.RTCWrapper {
+  caret-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 2vh;
+}
+
+.RedditTwitchChats {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.addRTC {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.addRTC {
+  min-width: 30vw;
+  height: 60vh;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.link-input-text {
+  font-size: 2rem;
+  text-overflow: ellipsis;
+}
+
+.link-text-input {
+  width: 99%;
+  border-bottom: 2px solid #ffffff;
+  margin: 30px 0;
+}
+
+.link-text-input input {
+  border: none;
+  background: none;
+  width: 100%;
+  outline: none;
+  color: #aaaaaa86;
+  padding: 0 5px;
+  height: 40px;
+}
+
+.link-text-input input:hover {
+  caret-color: auto;
+  color: #aaaaaa;
+}
+
+.link-submit {
+  position: absolute;
+  left: -9999px;
+}
