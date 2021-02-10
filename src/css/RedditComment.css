@@ -74,9 +74,13 @@ p {
   align-items: center;
 }
 
-.comment-upvote:hover,
-.comment-downvote:hover,
-.reply:hover, .share:hover {
-  cursor: pointer;
+.stickied {
+  color: #75d377;
 }
 
+.comment-upvote:hover,
+.comment-downvote:hover,
+.reply:hover, .share:hover,
+.stickied:hover {
+  cursor: pointer;
+}

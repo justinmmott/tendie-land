@@ -1,5 +1,6 @@
-import React, { useState, createRef } from "react";
+import React, { useEffect, useState, useRef, createRef } from "react";
 import matchAll from "match-all";
+import ls from 'local-storage';
 
 import RedditTwitchChat from "./RedditTwitchChat";
 import useInterval from "./../Interval";
@@ -9,14 +10,22 @@ import "./../css/RTCWrapper.css";
 const RTCWrapper = () => {
   const [threadIds, setThreadIds] = useState([]);
   const [add, setAdd] = useState(false);
+  const index = useRef(0);
+  const first = useRef(true)
 
-  let index = 0;
+  useEffect(() => {
+    if (first.current) {
+      setThreadIds(ls.get('threadIds') || []);
+      first.current = false;
+    }
+    ls.set('threadIds', threadIds);
+  }, [threadIds])
 
   useInterval(() => {
     if (threadIds.length > 0) {
-      threadIds[index].ref.current?.refresh();
-      if (index + 1 < threadIds.length) index++;
-      else index = 0;
+      if (index.current + 1 < threadIds.length) index.current++;
+      else index.current = 0;
+      threadIds[index.current].ref.current?.refresh();
     }
   }, 2000);
 

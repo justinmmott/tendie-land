@@ -15,6 +15,7 @@ import RedditCommentsWrapper from "./RedditCommentsWrapper";
 import FixRedditHTML from "./../FixRedditHTML";
 
 import "./../css/RedditTwitchChat.css";
+import Tooltip from "./Tooltip";
 
 const RedditTwitchChat = forwardRef((props, ref) => {
   const [comments, setComments] = useState();
@@ -67,8 +68,10 @@ const RedditTwitchChat = forwardRef((props, ref) => {
 
   const getDiscussion = async (sub) => {
     sub = await sub.fetch();
+    // console.log(sub);
     setPost(sub);
     let commentListing = commentFilter(sub.comments);
+    // console.log(sub.comments);
     setComments(await Promise.all(commentListing.map(commentMapper)));
     // if (scroll === false) setScroll(true);
     // comments = await comments.fetchMore({amount: 1000});
@@ -85,13 +88,14 @@ const RedditTwitchChat = forwardRef((props, ref) => {
       downs: x.downs,
       gilded: x.gilded,
       gildings: x.gildings,
+      id: x.id,
+      is_submitter: x.is_submitter,
       replies:
         x.replies.length > 0
           ? await Promise.all(commentFilter(x.replies).map(commentMapper))
           : x.replies,
       score: x.score,
-      id: x.id,
-      is_submitter: x.is_submitter,
+      stickied: x.stickied,
       parent_id: x.parent_id,
       permalink: x.permalink,
       ups: x.ups,
@@ -141,13 +145,13 @@ const RedditTwitchChat = forwardRef((props, ref) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
+
     if (replyRef) {
       r.getComment(replyRef).reply(reply);
     } else {
       // assume to thread
       post.reply(reply);
-      setReply('');
+      setReply("");
     }
   };
 
@@ -155,13 +159,17 @@ const RedditTwitchChat = forwardRef((props, ref) => {
     <div className="RedditTwitchChat-Wrapper">
       <div className="top-bar-wrapper">
         <div className="top-bar">
-          <div className="rtc-trash" onClick={handleChange}>
-            <i className="fas fa-trash-alt" />
-          </div>
+          <Tooltip content="Delete Discussion" direction="bottom">
+            <div className="rtc-trash" onClick={handleChange}>
+              <i className="fas fa-trash-alt" />
+            </div>
+          </Tooltip>
           <div className="Subreddit-name">{post.subreddit_name_prefixed}</div>
-          <div className="rtc-plus" onClick={() => props.onAdd(true)}>
-            <i className=" fas fa-plus" />
-          </div>
+          <Tooltip content="Add new Discussion" direction="bottom">
+            <div className="rtc-plus" onClick={() => props.onAdd(true)}>
+              <i className=" fas fa-plus" />
+            </div>
+          </Tooltip>
         </div>
       </div>
       <div className="RedditTwitchChat">
@@ -211,9 +219,11 @@ const RedditTwitchChat = forwardRef((props, ref) => {
         </div>
         <div className="post-comments-wrapper" ref={messagesBegin}>
           <div className="s2t-wrapper">
-            <div className="scroll-to-top" onClick={scrollToTop}>
-              <i className="fas fa-arrow-up" />
-            </div>
+            <Tooltip content="Go to top" direction="top">
+              <div className="scroll-to-top" onClick={scrollToTop}>
+                <i className="fas fa-arrow-up" />
+              </div>
+            </Tooltip>
           </div>
           <RedditCommentsWrapper
             comments={comments}
@@ -246,7 +256,7 @@ const RedditTwitchChat = forwardRef((props, ref) => {
             />
 
             <button type="submit" className="send-wrapper">
-              <i className="fas fa-paper-plane"/>
+              <i className="fas fa-paper-plane" />
             </button>
           </form>
         </div>
