@@ -10,7 +10,6 @@ import Loader from "react-loader-spinner";
 import Cookies from "js-cookie";
 
 import { clientId } from "../globals/globals";
-import clientSecret from "../globals/secrets";
 import RedditCommentsWrapper from "./RedditCommentsWrapper";
 import FixRedditHTML from "./../FixRedditHTML";
 
@@ -24,16 +23,10 @@ const RedditTwitchChat = forwardRef((props, ref) => {
   const [replyRef, setReplyRef] = useState();
   const [vote, setVote] = useState(0);
   const [reply, setReply] = useState();
+  const [r, setR] = useState();
   const messagesBegin = useRef();
   const chatBox = useRef();
   const form = useRef();
-
-  const r = new snoowrap({
-    userAgent: "web:land.tendie.redditapp:v0.0.1 (by /u/Chocolate_uyu)",
-    clientId: clientId,
-    clientSecret: clientSecret,
-    refreshToken: Cookies.get("__session"),
-  });
 
   useImperativeHandle(ref, () => ({
     refresh() {
@@ -53,7 +46,14 @@ const RedditTwitchChat = forwardRef((props, ref) => {
     if (comments) setComments();
 
     const wrapper = async () => {
-      let sub = await r.getSubmission(props.threadId);
+      const tempr = new snoowrap({
+        userAgent: "web:land.tendie.redditapp:v0.0.1 (by /u/Chocolate_uyu)",
+        clientId: clientId,
+        clientSecret: "",
+        refreshToken: Cookies.get("__session"),
+      });
+      setR(tempr);
+      let sub = await tempr.getSubmission(props.threadId);
       setPostRef(sub);
       getDiscussion(sub);
     };
@@ -67,7 +67,13 @@ const RedditTwitchChat = forwardRef((props, ref) => {
   }, [props.threadId]);
 
   const getDiscussion = async (sub) => {
-    sub = await sub.fetch();
+    try {
+      sub = await sub.fetch();
+    } catch (err) {
+      Cookies.remove('__session');
+      alert("Session ended log-in again");
+      window.location.href = 'https://tendie.land';
+    }
     // console.log(sub);
     setPost(sub);
     let commentListing = commentFilter(sub.comments);

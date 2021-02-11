@@ -14,9 +14,11 @@ app.use(cookies());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
 
+const baseUrl = "https://tendie.land";
+
 app.get("/", (req, res) => {
-  if (!req.cookies.__session) res.redirect("https://tendie.land/login");
-  else res.redirect("http://tendie.land/app");
+  if (!req.cookies.__session) res.redirect(baseUrl + "/login");
+  else res.redirect(baseUrl + "/app");
 });
 
 app.get("/app", (req, res) => {
@@ -28,17 +30,15 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/authorize_callback", (req, res) => {
-//   const state = req.query.state;
   const code = req.query.code;
-
-  const globals = functions.config().rtc;
-  const base64encodedData = Buffer.from(globals.id + ":" +
-    globals.key).toString("base64");
+  console.log(code);
+  const base64encodedData = Buffer.from("SAH2EwB0B_iuTQ" + ":" +
+  "").toString("base64");
 
   const body = querystring.stringify({
     grant_type: "authorization_code",
     code: code,
-    redirect_uri: globals.redirect_uri,
+    redirect_uri: baseUrl + "/authorize_callback",
   });
 
   fetch("https://www.reddit.com/api/v1/access_token", {
@@ -51,14 +51,10 @@ app.get("/authorize_callback", (req, res) => {
   })
       .then((r) => r.json())
       .then((data) => {
-        res.cookie("token", data.access_token, {
-          expires: new Date(new Date().getTime() + data.refresh_token * 1000),
+        res.cookie("__session", data.refresh_token, {
           secure: true,
         })
-            .cookie("__session", data.refresh_token, {
-              secure: true,
-            })
-            .redirect("https://tendie.land");
+            .redirect(baseUrl);
       });
 });
 

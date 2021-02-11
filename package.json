@@ -24,6 +24,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "ld": "npm run build && rm -rf ./functions/build && mv ./build/ ./functions/ && cd ./functions/build && cp index.html app-index.html && rm index.html",
     "deploy": "npm run build && rm -rf ./functions/build && mv ./build/ ./functions/ && cd ./functions/build && cp index.html app-index.html && rm index.html && cd ./../.. && firebase deploy"
   },
   "eslintConfig": {
