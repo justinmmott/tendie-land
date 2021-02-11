@@ -11,7 +11,7 @@ import Cookies from "js-cookie";
 
 import { clientId } from "../globals/globals";
 import RedditCommentsWrapper from "./RedditCommentsWrapper";
-import FixRedditHTML from "./../FixRedditHTML";
+import FixRedditHTML from "../scripts/FixRedditHTML";
 
 import "./../css/RedditTwitchChat.css";
 import Tooltip from "./Tooltip";
@@ -21,7 +21,6 @@ const RedditTwitchChat = forwardRef((props, ref) => {
   const [post, setPost] = useState();
   const [postRef, setPostRef] = useState();
   const [replyRef, setReplyRef] = useState();
-  const [vote, setVote] = useState(0);
   const [reply, setReply] = useState();
   const [r, setR] = useState();
   const messagesBegin = useRef();
@@ -55,7 +54,7 @@ const RedditTwitchChat = forwardRef((props, ref) => {
       setR(tempr);
       let sub = await tempr.getSubmission(props.threadId);
       setPostRef(sub);
-      getDiscussion(sub);
+      await getDiscussion(sub);
     };
 
     if (!isCancelled) wrapper();
@@ -70,9 +69,9 @@ const RedditTwitchChat = forwardRef((props, ref) => {
     try {
       sub = await sub.fetch();
     } catch (err) {
-      Cookies.remove('__session');
+      Cookies.remove("__session");
       alert("Session ended log-in again");
-      window.location.href = 'https://tendie.land';
+      window.location.href = "https://tendie.land";
     }
     // console.log(sub);
     setPost(sub);
@@ -96,6 +95,7 @@ const RedditTwitchChat = forwardRef((props, ref) => {
       gildings: x.gildings,
       id: x.id,
       is_submitter: x.is_submitter,
+      likes: x.likes,
       replies:
         x.replies.length > 0
           ? await Promise.all(commentFilter(x.replies).map(commentMapper))
@@ -127,26 +127,44 @@ const RedditTwitchChat = forwardRef((props, ref) => {
   };
 
   const upvote = () => {
-    if (vote <= 0) {
+    const likes = post.likes;
+    const score = post.score;
+    if (!likes) {
+      setPost({
+        ...post,
+        likes: true,
+        score: likes === false ? score + 2 : score + 1,
+      });
       post.upvote();
-      setVote(1);
     } else {
       unvote();
     }
   };
 
   const downvote = () => {
-    if (vote >= 0) {
+    const likes = post.likes;
+    const score = post.score;
+    if (likes == null || likes) {
+      setPost({
+        ...post,
+        likes: false,
+        score: likes === true ? score - 2 : score - 1,
+      });
       post.downvote();
-      setVote(-1);
     } else {
       unvote();
     }
   };
 
   const unvote = () => {
+    const likes = post.likes;
+    const score = post.score;
+    setPost({
+      ...post,
+      likes: null,
+      score: likes === false ? score + 1 : score - 1,
+    });
     post.unvote();
-    setVote(0);
   };
 
   const handleSubmit = (event) => {
@@ -161,6 +179,10 @@ const RedditTwitchChat = forwardRef((props, ref) => {
       setReply("");
     }
   };
+
+  const stopReply = () => {
+    setReplyRef();
+  }
 
   return comments ? (
     <div className="RedditTwitchChat-Wrapper">
@@ -189,9 +211,9 @@ const RedditTwitchChat = forwardRef((props, ref) => {
                   upvote();
                 }}
                 style={
-                  vote === 0
+                  post.likes == null
                     ? { color: "#EFEFF1" }
-                    : vote === 1
+                    : post.likes
                     ? { color: "#FF4500" }
                     : null
                 }
@@ -203,9 +225,9 @@ const RedditTwitchChat = forwardRef((props, ref) => {
                 className="comment-downvote"
                 onClick={() => downvote()}
                 style={
-                  vote === 0
+                  post.likes == null
                     ? { color: "#EFEFF1" }
-                    : vote === -1
+                    : !post.likes
                     ? { color: "#7193FF" }
                     : null
                 }
@@ -260,6 +282,7 @@ const RedditTwitchChat = forwardRef((props, ref) => {
               onChange={(event) => {
                 setReply(event.target.value);
               }}
+              onBlur={stopReply}
             />
 
             <button type="submit" className="send-wrapper">

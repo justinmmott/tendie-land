@@ -3,7 +3,7 @@ import matchAll from "match-all";
 import ls from 'local-storage';
 
 import RedditTwitchChat from "./RedditTwitchChat";
-import useInterval from "./../Interval";
+import useInterval from "./hooks/Interval";
 
 import "./../css/RTCWrapper.css";
 
@@ -25,7 +25,7 @@ const RTCWrapper = () => {
     if (threadIds.length > 0) {
       if (index.current + 1 < threadIds.length) index.current++;
       else index.current = 0;
-      // threadIds[index.current].ref.current?.refresh();
+      threadIds[index.current].ref.current?.refresh();
     }
   }, 2000);
 

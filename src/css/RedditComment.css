@@ -41,7 +41,7 @@
   grid-area: body;
   justify-self: start;
   text-align: left;
-  font-size: 0.6em;
+  font-size: 1.3rem;
   object-fit: cover;
   max-width: 100%;
 }

@@ -32,7 +32,6 @@ app.get("/login", (req, res) => {
 
 app.get("/authorize_callback", (req, res) => {
   const code = req.query.code;
-  console.log(code);
   const base64encodedData = Buffer.from(clientId + ":").toString("base64");
 
   const body = querystring.stringify({

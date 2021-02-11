@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import RedditComment from "./RedditComment";
 
@@ -16,8 +16,7 @@ const RedditCommentsWrapper = (props) => {
       {props.topLevel
         ? props.comments.map((comment, index) => (
             <div key={index} className="top-level-comment">
-              {
-                !(hideSticky && comment.stickied) &&
+              {!(hideSticky && comment.stickied) && (
                 <RedditComment
                   key={index}
                   comment={comment}
@@ -25,7 +24,7 @@ const RedditCommentsWrapper = (props) => {
                   r={props.r}
                   onHideStickied={handleHideStickied}
                 />
-              }
+              )}
             </div>
           ))
         : props.comments.map((comment, index) => (
