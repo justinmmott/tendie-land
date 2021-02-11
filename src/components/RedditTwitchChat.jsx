@@ -117,11 +117,11 @@ const RedditTwitchChat = forwardRef((props, ref) => {
     props.onAdd(false);
   };
 
-  const handleReply = (id) => {
-    if (replyRef === id) {
+  const handleReply = (commentor) => {
+    if (replyRef && replyRef.id === commentor.id) {
       setReplyRef("");
     } else {
-      setReplyRef(id);
+      setReplyRef(commentor);
       chatBox.current.focus();
     }
   };
@@ -153,7 +153,8 @@ const RedditTwitchChat = forwardRef((props, ref) => {
     event.preventDefault();
 
     if (replyRef) {
-      r.getComment(replyRef).reply(reply);
+      r.getComment(replyRef.id).reply(reply);
+      setReply("");
     } else {
       // assume to thread
       post.reply(reply);
@@ -252,7 +253,7 @@ const RedditTwitchChat = forwardRef((props, ref) => {
               ref={chatBox}
               placeholder={
                 replyRef
-                  ? `\n  You're replying to the comment with id ${replyRef}`
+                  ? `\n  You're replying to ${replyRef.name}'s comment`
                   : "\n  You're commenting on the discussion thread"
               }
               value={reply}

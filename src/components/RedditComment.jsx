@@ -110,7 +110,12 @@ const RedditComment = (props) => {
             </div>
             <div
               className="reply"
-              onClick={() => props.onReply(props.comment.id)}
+              onClick={() =>
+                props.onReply({
+                  id: props.comment.id,
+                  name: props.comment.author,
+                })
+              }
             >
               Reply
             </div>
