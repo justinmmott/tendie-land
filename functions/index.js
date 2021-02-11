@@ -3,7 +3,7 @@ const querystring = require("querystring");
 const fetch = require("node-fetch");
 const express = require("express");
 const app = express();
-const cors = require("cors")({origin: true});
+const cors = require("cors")({ origin: true });
 const path = require("path");
 const cookies = require("cookie-parser");
 
@@ -15,6 +15,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "build")));
 
 const baseUrl = "https://tendie.land";
+const clientId = "SAH2EwB0B_iuTQ";
 
 app.get("/", (req, res) => {
   if (!req.cookies.__session) res.redirect(baseUrl + "/login");
@@ -32,8 +33,7 @@ app.get("/login", (req, res) => {
 app.get("/authorize_callback", (req, res) => {
   const code = req.query.code;
   console.log(code);
-  const base64encodedData = Buffer.from("SAH2EwB0B_iuTQ" + ":" +
-  "").toString("base64");
+  const base64encodedData = Buffer.from(clientId + ":").toString("base64");
 
   const body = querystring.stringify({
     grant_type: "authorization_code",
@@ -46,16 +46,17 @@ app.get("/authorize_callback", (req, res) => {
     body: body,
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Basic " + base64encodedData,
+      Authorization: "Basic " + base64encodedData,
     },
   })
-      .then((r) => r.json())
-      .then((data) => {
-        res.cookie("__session", data.refresh_token, {
+    .then((r) => r.json())
+    .then((data) => {
+      res
+        .cookie("__session", data.refresh_token, {
           secure: true,
         })
-            .redirect(baseUrl);
-      });
+        .redirect(baseUrl);
+    });
 });
 
 // 404 handler
