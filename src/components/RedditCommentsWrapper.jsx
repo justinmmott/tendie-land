@@ -4,7 +4,7 @@ import RedditComment from "./RedditComment";
 
 import "./../css/RedditCommentsWrapper.css";
 
-const RedditCommentsWrapper = (props) => {
+const RedditCommentsWrapper = ({ topLevel, comments, snoo, onReply }) => {
   const [hideSticky, setHideSticky] = useState(false);
 
   const handleHideStickied = () => {
@@ -13,30 +13,30 @@ const RedditCommentsWrapper = (props) => {
 
   return (
     <div className="comments">
-      {props.topLevel
-        ? props.comments.map((comment, index) => (
+      {topLevel
+        ? comments.map((comment, index) => (
             <div key={index} className="top-level-comment">
               {!(hideSticky && comment.stickied) && (
                 <RedditComment
                   key={index}
-                  comment={comment}
-                  onReply={props.onReply}
-                  r={props.r}
+                  commentState={comment}
+                  onReply={onReply}
+                  snoo={snoo}
                   onHideStickied={handleHideStickied}
                 />
               )}
             </div>
           ))
-        : props.comments.map((comment, index) => (
+        : comments.map((comment, index) => (
             <RedditComment
               key={index}
-              comment={comment}
-              onReply={props.onReply}
-              r={props.r}
+              commentState={comment}
+              onReply={onReply}
+              snoo={snoo}
             ></RedditComment>
           ))}
     </div>
   );
 };
 
-export default RedditCommentsWrapper;
+export default React.memo(RedditCommentsWrapper);

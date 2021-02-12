@@ -68,18 +68,10 @@ p {
   margin-top: 5px;
 }
 
-.comment-score {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
 .stickied {
   color: #75d377;
 }
 
-.comment-upvote:hover,
-.comment-downvote:hover,
 .reply:hover, .share:hover,
 .stickied:hover {
   cursor: pointer;

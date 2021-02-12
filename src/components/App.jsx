@@ -1,5 +1,5 @@
 import RedditOAuth from "./RedditOAuth";
-import RTCWrapper from "./RTCWrapper";
+import Home from "./Home";
 
 import "./../css/App.css";
 
@@ -12,7 +12,7 @@ const App = () => {
   return (
     <div className="App">
       <header className="App-header">
-        {getURLPath() === "/login" ? <RedditOAuth /> : <RTCWrapper />}
+        {getURLPath() === "/login" ? <RedditOAuth /> : <Home />}
       </header>
     </div>
   );

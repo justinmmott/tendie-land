@@ -1,120 +1,34 @@
-import {
-  useEffect,
-  useState,
-  forwardRef,
-  useImperativeHandle,
-  useRef,
-} from "react";
-import snoowrap from "snoowrap";
+import React, { useEffect, useState, useRef } from "react";
 import Loader from "react-loader-spinner";
-import Cookies from "js-cookie";
 
-import { clientId } from "../globals/globals";
 import RedditCommentsWrapper from "./RedditCommentsWrapper";
 import FixRedditHTML from "../scripts/FixRedditHTML";
+import RedditScore from "./RedditScore";
 
 import "./../css/RedditTwitchChat.css";
 import Tooltip from "./Tooltip";
 
-const RedditTwitchChat = forwardRef((props, ref) => {
-  const [comments, setComments] = useState();
-  const [post, setPost] = useState();
-  const [postRef, setPostRef] = useState();
+const RedditTwitchChat = ({
+  submission,
+  comments,
+  snoo,
+  onDelete,
+  onAdd,
+  threadId,
+}) => {
   const [replyRef, setReplyRef] = useState();
   const [reply, setReply] = useState();
-  const [r, setR] = useState();
+  const [post, setPost] = useState();
   const messagesBegin = useRef();
   const chatBox = useRef();
   const form = useRef();
 
-  useImperativeHandle(ref, () => ({
-    refresh() {
-      postRef.refresh();
-      getDiscussion(postRef);
-    },
-  }));
-
-  // const [scroll, setScroll] = useState(false);
+  useEffect(() => {
+    setPost(submission);
+  }, [submission]);
 
   const scrollToTop = () => {
     messagesBegin.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  useEffect(() => {
-    let isCancelled = false;
-    if (comments) setComments();
-
-    const wrapper = async () => {
-      const tempr = new snoowrap({
-        userAgent: "web:land.tendie.redditapp:v0.0.1 (by /u/Chocolate_uyu)",
-        clientId: clientId,
-        clientSecret: "",
-        refreshToken: Cookies.get("__session"),
-      });
-      setR(tempr);
-      let sub = await tempr.getSubmission(props.threadId);
-      setPostRef(sub);
-      await getDiscussion(sub);
-    };
-
-    if (!isCancelled) wrapper();
-
-    return () => {
-      isCancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.threadId]);
-
-  const getDiscussion = async (sub) => {
-    try {
-      sub = await sub.fetch();
-    } catch (err) {
-      Cookies.remove("__session");
-      alert("Session ended log-in again");
-      window.location.href = "https://tendie.land";
-    }
-    // console.log(sub);
-    setPost(sub);
-    let commentListing = commentFilter(sub.comments);
-    // console.log(sub.comments);
-    setComments(await Promise.all(commentListing.map(commentMapper)));
-    // if (scroll === false) setScroll(true);
-    // comments = await comments.fetchMore({amount: 1000});
-  };
-
-  const commentMapper = async (x) => {
-    return {
-      author: (await x.author).name,
-      author_flair_text: x.author_flair_text,
-      body_html: x.body_html,
-      can_gild: x.can_gild,
-      created_utc: x.created_utc,
-      distinguished: x.distinguished,
-      downs: x.downs,
-      gilded: x.gilded,
-      gildings: x.gildings,
-      id: x.id,
-      is_submitter: x.is_submitter,
-      likes: x.likes,
-      replies:
-        x.replies.length > 0
-          ? await Promise.all(commentFilter(x.replies).map(commentMapper))
-          : x.replies,
-      score: x.score,
-      stickied: x.stickied,
-      parent_id: x.parent_id,
-      permalink: x.permalink,
-      ups: x.ups,
-    };
-  };
-
-  const commentFilter = (c) => {
-    return c.filter((x) => x.body !== "[removed]" && x.body !== "[deleted]");
-  };
-
-  const handleChange = () => {
-    props.onDelete(props.threadId);
-    props.onAdd(false);
   };
 
   const handleReply = (commentor) => {
@@ -126,52 +40,11 @@ const RedditTwitchChat = forwardRef((props, ref) => {
     }
   };
 
-  const upvote = () => {
-    const likes = post.likes;
-    const score = post.score;
-    if (!likes) {
-      setPost({
-        ...post,
-        likes: true,
-        score: likes === false ? score + 2 : score + 1,
-      });
-      post.upvote();
-    } else {
-      unvote();
-    }
-  };
-
-  const downvote = () => {
-    const likes = post.likes;
-    const score = post.score;
-    if (likes == null || likes) {
-      setPost({
-        ...post,
-        likes: false,
-        score: likes === true ? score - 2 : score - 1,
-      });
-      post.downvote();
-    } else {
-      unvote();
-    }
-  };
-
-  const unvote = () => {
-    const likes = post.likes;
-    const score = post.score;
-    setPost({
-      ...post,
-      likes: null,
-      score: likes === false ? score + 1 : score - 1,
-    });
-    post.unvote();
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
     if (replyRef) {
-      r.getComment(replyRef.id).reply(reply);
+      snoo.getComment(replyRef.id).reply(reply);
       setReply("");
     } else {
       // assume to thread
@@ -180,11 +53,16 @@ const RedditTwitchChat = forwardRef((props, ref) => {
     }
   };
 
+  const handleChange = () => {
+    onDelete(threadId);
+    onAdd(false);
+  };
+
   const stopReply = () => {
     setReplyRef();
-  }
+  };
 
-  return comments ? (
+  return post ? (
     <div className="RedditTwitchChat-Wrapper">
       <div className="top-bar-wrapper">
         <div className="top-bar">
@@ -195,7 +73,7 @@ const RedditTwitchChat = forwardRef((props, ref) => {
           </Tooltip>
           <div className="Subreddit-name">{post.subreddit_name_prefixed}</div>
           <Tooltip content="Add new Discussion" direction="bottom">
-            <div className="rtc-plus" onClick={() => props.onAdd(true)}>
+            <div className="rtc-plus" onClick={() => onAdd(true)}>
               <i className=" fas fa-plus" />
             </div>
           </Tooltip>
@@ -204,37 +82,13 @@ const RedditTwitchChat = forwardRef((props, ref) => {
       <div className="RedditTwitchChat">
         <div className="rtc-header">
           <div className="score-wrapper">
-            <div className="score">
-              <div
-                className="comment-upvote"
-                onClick={() => {
-                  upvote();
-                }}
-                style={
-                  post.likes == null
-                    ? { color: "#EFEFF1" }
-                    : post.likes
-                    ? { color: "#FF4500" }
-                    : null
-                }
-              >
-                <i className="fas fa-arrow-up" />
-              </div>
-              <div className="comment-score-num">{post.score}</div>
-              <div
-                className="comment-downvote"
-                onClick={() => downvote()}
-                style={
-                  post.likes == null
-                    ? { color: "#EFEFF1" }
-                    : !post.likes
-                    ? { color: "#7193FF" }
-                    : null
-                }
-              >
-                <i className="fas fa-arrow-down" />
-              </div>
-            </div>
+            <RedditScore
+              className="RedditScore"
+              flex="column"
+              post={post}
+              setPost={setPost}
+              snooPostRef={post}
+            />
           </div>
           <div className="post">
             <div className="post-name">{post.title}</div>
@@ -258,7 +112,7 @@ const RedditTwitchChat = forwardRef((props, ref) => {
             comments={comments}
             topLevel={true}
             onReply={handleReply}
-            r={r}
+            snoo={snoo}
           />
         </div>
       </div>
@@ -295,6 +149,6 @@ const RedditTwitchChat = forwardRef((props, ref) => {
   ) : (
     <Loader type="Oval" color="#69abed" className="loader" />
   );
-});
+};
 
-export default RedditTwitchChat;
+export default React.memo(RedditTwitchChat);

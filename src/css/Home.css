@@ -1,0 +1,15 @@
+.Home {
+  caret-color: transparent;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-top: 2vh;
+}
+
+.RTCWrappers {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}

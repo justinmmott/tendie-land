@@ -35,20 +35,12 @@
 }
 
 .score-wrapper {
-  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   font-size: 1.3rem;
   margin: 0 10px 0 10px;
   padding-top: 3px;
-}
-
-.score {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .rtc-trash,

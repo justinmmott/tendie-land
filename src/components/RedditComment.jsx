@@ -1,19 +1,20 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import copy from "copy-to-clipboard";
 
 import RedditCommentsWrapper from "./RedditCommentsWrapper";
 import FixRedditHTML from "../scripts/FixRedditHTML";
 import Tooltip from "./Tooltip";
+import RedditScore from "./RedditScore";
 
 import "./../css/RedditComment.css";
 
-const RedditComment = (props) => {
+const RedditComment = ({ commentState, onReply, snoo, onHideStickied}) => {
   const [shared, setShared] = useState(false);
   const [comment, setComment] = useState();
 
   useEffect(() => {
-    setComment(props.comment);
-  }, [props.comment]);
+    setComment(commentState);
+  }, [commentState]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -28,49 +29,6 @@ const RedditComment = (props) => {
     if (m === 0) res = "Now";
     else res = `${m}m`;
     return res;
-  };
-  const upvote = () => {
-    const post = props.r.getComment(comment.id);
-    const likes = comment.likes;
-    const score = comment.score;
-    if (!likes) {
-      setComment({
-        ...comment,
-        likes: true,
-        score: likes === false ? score + 2 : score + 1,
-      });
-      post.upvote();
-    } else {
-      unvote();
-    }
-  };
-
-  const downvote = () => {
-    const post = props.r.getComment(comment.id);
-    const likes = comment.likes;
-    const score = comment.score;
-    if (likes == null || likes) {
-      setComment({
-        ...comment,
-        likes: false,
-        score: likes === true ? score - 2 : score - 1,
-      });
-      post.downvote();
-    } else {
-      unvote();
-    }
-  };
-
-  const unvote = () => {
-    const post = props.r.getComment(comment.id);
-    const likes = comment.likes;
-    const score = comment.score;
-    setComment({
-      ...comment,
-      likes: null,
-      score: likes === true ? score - 1 : score + 1,
-    });
-    post.unvote();
   };
 
   return (
@@ -102,39 +60,15 @@ const RedditComment = (props) => {
               }}
             />
             <div className="bottom-bar">
-              <div
-                className="comment-upvote"
-                onClick={() => {
-                  upvote();
-                }}
-                style={
-                  comment.likes == null
-                    ? { color: "#EFEFF1" }
-                    : comment.likes
-                    ? { color: "#FF4500" }
-                    : null
-                }
-              >
-                <i className="fas fa-arrow-up" />
-              </div>
-              <div className="comment-score-num">{comment.score}</div>
-              <div
-                className="comment-downvote"
-                onClick={() => downvote()}
-                style={
-                  comment.likes == null
-                    ? { color: "#EFEFF1" }
-                    : !comment.likes
-                    ? { color: "#7193FF" }
-                    : null
-                }
-              >
-                <i className="fas fa-arrow-down" />
-              </div>
+              <RedditScore
+                post={comment}
+                setPost={setComment}
+                snooPostRef={snoo.getComment(comment.id)}
+              />
               <div
                 className="reply"
                 onClick={() =>
-                  props.onReply({
+                  onReply({
                     id: comment.id,
                     name: comment.author,
                   })
@@ -166,7 +100,7 @@ const RedditComment = (props) => {
                   <span
                     className="stickied"
                     title="Hide Stickied Comment"
-                    onClick={props.onHideStickied}
+                    onClick={onHideStickied}
                   >
                     <i className="fas fa-thumbtack"></i>
                   </span>
@@ -176,8 +110,8 @@ const RedditComment = (props) => {
             <div className="comment-replies">
               <RedditCommentsWrapper
                 comments={comment.replies}
-                onReply={props.onReply}
-                r={props.r}
+                onReply={onReply}
+                snoo={snoo}
               />
             </div>
           </div>
@@ -187,4 +121,4 @@ const RedditComment = (props) => {
   );
 };
 
-export default RedditComment;
+export default React.memo(RedditComment);

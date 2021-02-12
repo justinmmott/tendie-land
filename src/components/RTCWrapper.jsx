@@ -1,112 +1,107 @@
-import React, { useEffect, useState, useRef, createRef } from "react";
-import matchAll from "match-all";
-import ls from 'local-storage';
-
+import {
+  useEffect,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
+import snoowrap from "snoowrap";
+import Cookies from "js-cookie";
+import { clientId } from "../globals/globals";
 import RedditTwitchChat from "./RedditTwitchChat";
-import useInterval from "./hooks/Interval";
+import Loader from "react-loader-spinner";
 
-import "./../css/RTCWrapper.css";
+const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {
+  const [comments, setComments] = useState();
+  const [submission, setSubmission] = useState();
+  const [snoo, setSnoo] = useState();
+  const [submissionRef, setSubmissionRef] = useState();
 
-const RTCWrapper = () => {
-  const [threadIds, setThreadIds] = useState([]);
-  const [add, setAdd] = useState(false);
-  const index = useRef(0);
-  const first = useRef(true)
+  useImperativeHandle(ref, () => ({
+    refresh() {
+      submissionRef.refresh();
+      getSubmission(submissionRef);
+    },
+  }));
 
   useEffect(() => {
-    if (first.current) {
-      setThreadIds(ls.get('threadIds') || []);
-      first.current = false;
-    }
-    ls.set('threadIds', threadIds);
-  }, [threadIds])
+    let isCancelled = false;
+    if (comments) setComments();
 
-  useInterval(() => {
-    if (threadIds.length > 0) {
-      if (index.current + 1 < threadIds.length) index.current++;
-      else index.current = 0;
-      threadIds[index.current].ref.current?.refresh();
-    }
-  }, 2000);
-
-  const AddRTC = () => {
-    const [link, setLink] = useState("");
-
-    const submitThread = (threadLink) => {
-      let urlRegex = /((https?:\/\/www\.)?(reddit\.com\/r\/\w*\/\w*\/)?(\w*)(\/\w*\/))?/g;
-      let id = matchAll(threadLink, urlRegex).nextRaw();
-      id = id.filter((x) => !x.includes("/"))[0];
-      setThreadIds([
-        ...threadIds,
-        {
-          id: id,
-          ref: createRef(),
-        },
-      ]);
+    const wrapper = async () => {
+      const tempSnoo = new snoowrap({
+        userAgent: "app:land.tendie.redditapp:v0.0.3 (by /u/Chocolate_uyu)",
+        clientId: clientId,
+        clientSecret: "",
+        refreshToken: Cookies.get("__session"),
+      });
+      setSnoo(tempSnoo);
+      let sub = await tempSnoo.getSubmission(threadId);
+      setSubmissionRef(sub);
+      await getSubmission(sub);
     };
 
-    const defaultURL = "https://www.reddit.com/r/subreddit/l234s3/thread-name";
+    if (!isCancelled) wrapper();
 
-    const LinkForm = () => {
-      return (
-        <form className="link-input" onSubmit={() => submitThread(link)}>
-          <div className="link-input-text">Paste Reddit Thread here</div>
-          <div className="link-text-input">
-            <input
-              type="text"
-              placeholder={defaultURL}
-              value={link}
-              onChange={(event) => {
-                setLink(event.target.value);
-              }}
-              required
-              autoFocus
-            />
-          </div>
-          <div className="link-submit" tabIndex="-1">
-            <input type="submit" />
-          </div>
-        </form>
-      );
+    return () => {
+      isCancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [threadId]);
 
-    return (
-      <div className="addRTC">
-        <LinkForm></LinkForm>
-      </div>
-    );
+  const getSubmission = async (sub) => {
+    try {
+      sub = await sub.fetch();
+    } catch (err) {
+      Cookies.remove("__session");
+      alert("Session ended log-in again");
+      window.location.href = "https://tendie.land";
+    }
+    setSubmission(sub);
+    let commentListing = commentFilter(sub.comments);
+    setComments(await Promise.all(commentListing.map(commentMapper)));
   };
 
-  const handleDelete = (threadId) => {
-    setThreadIds(threadIds.filter((x) => x.id !== threadId));
+  const commentMapper = async (x) => {
+    return {
+      author: (await x.author).name,
+      author_flair_text: x.author_flair_text,
+      body_html: x.body_html,
+      can_gild: x.can_gild,
+      created_utc: x.created_utc,
+      distinguished: x.distinguished,
+      downs: x.downs,
+      gilded: x.gilded,
+      gildings: x.gildings,
+      id: x.id,
+      is_submitter: x.is_submitter,
+      likes: x.likes,
+      replies:
+        x.replies.length > 0
+          ? await Promise.all(commentFilter(x.replies).map(commentMapper))
+          : x.replies,
+      score: x.score,
+      stickied: x.stickied,
+      parent_id: x.parent_id,
+      permalink: x.permalink,
+      ups: x.ups,
+    };
   };
 
-  const handleAdd = (b) => {
-    setAdd(b);
+  const commentFilter = (c) => {
+    return c.filter((x) => x.body !== "[removed]" && x.body !== "[deleted]");
   };
 
-  return (
-    <div className="RTCWrapper">
-      {threadIds.length > 0 ? (
-        <div className="RedditTwitchChats">
-          <>
-            {threadIds.map((threadId, index) => (
-              <RedditTwitchChat
-                ref={threadId.ref}
-                key={index}
-                threadId={threadId.id}
-                onDelete={handleDelete}
-                onAdd={handleAdd}
-              />
-            ))}
-            {add && threadIds.length < 2 ? <AddRTC /> : null}
-          </>
-        </div>
-      ) : (
-        <AddRTC />
-      )}
-    </div>
+  return comments && submission ? (
+    <RedditTwitchChat
+      submission={submission}
+      comments={comments}
+      snoo={snoo}
+      onDelete={onDelete}
+      onAdd={onAdd}
+    />
+  ) : (
+    <Loader type="Oval" color="#69abed" className="loader" />
   );
-};
+});
 
 export default RTCWrapper;
