@@ -11,7 +11,7 @@ const FixRedditHTML = (body) => {
       "\n$6\n<p>$5</p></div>"
   );
   let openNewTab = /(<a href=".*?")/gm;
-  body = body.replace(openNewTab, "$1 target=\"_blank\"");
+  body = body.replace(openNewTab, "$1 target=\"_blank\" rel=\"noreferrer\"");
   let messages = /(<a href=")(\/.*?")/gm;
   body = body.replace(messages, "$1https://www.reddit.com$2");
   return body;

@@ -4,7 +4,6 @@
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  margin-top: 2vh;
 }
 
 .RTCWrappers {
@@ -12,4 +11,5 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
+  margin-top: 2vh;
 }

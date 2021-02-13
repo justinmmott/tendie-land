@@ -12,3 +12,12 @@
   font-size: calc(10px + 2vmin);
   color: #efeff1;
 }
+
+.donation {
+  margin: 2vh 0px 1vh 0px;
+  font-size: 1.4rem;
+}
+
+.donation img:hover {
+  cursor: pointer;
+}

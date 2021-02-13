@@ -100,9 +100,7 @@ const RedditComment = ({ commentState, onReply, snoo, onHideStickied }) => {
                   className="share"
                   onClick={() => {
                     setShared(true);
-                    copy(`https://www.reddit.com${comment.permalink}`, {
-                      message: "Copied link to clipboard",
-                    });
+                    copy(`https://www.reddit.com${comment.permalink}`);
                   }}
                   data-tip
                   data-for="copiedTip"

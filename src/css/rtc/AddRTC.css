@@ -1,14 +1,19 @@
-.addRTC {
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+.addRTC-wrapper {
+  min-width: 30vw;
+  height: 95vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .addRTC {
-  min-width: 30vw;
   height: 60vh;
-  padding: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 15px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
 }
 
 .link-input-text {

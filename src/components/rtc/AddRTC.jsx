@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState } from "react";
 
-import './../../css/rtc/AddRTC.css';
+import "./../../css/rtc/AddRTC.css";
 
 const AddRTC = ({ onSubmitThread }) => {
   const [link, setLink] = useState("");
@@ -9,8 +9,8 @@ const AddRTC = ({ onSubmitThread }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmitThread(link)
-  }
+    onSubmitThread(link);
+  };
 
   const LinkForm = () => {
     return (
@@ -35,8 +35,10 @@ const AddRTC = ({ onSubmitThread }) => {
     );
   };
   return (
-    <div className="addRTC">
-      <LinkForm></LinkForm>
+    <div className="addRTC-wrapper">
+      <div className="addRTC">
+        <LinkForm></LinkForm>
+      </div>
     </div>
   );
 };
