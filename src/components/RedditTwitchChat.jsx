@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import Loader from "react-loader-spinner";
 
 import RedditCommentsWrapper from "./RedditCommentsWrapper";
@@ -17,48 +17,47 @@ const RedditTwitchChat = ({
   threadId,
 }) => {
   const [replyRef, setReplyRef] = useState();
-  const [reply, setReply] = useState();
+  const [reply, setReply] = useState("");
   const [post, setPost] = useState();
   const messagesBegin = useRef();
   const chatBox = useRef();
   const form = useRef();
 
   useEffect(() => {
-    setPost(submission);
+    let cancelled = false;
+    !cancelled && setPost(submission);
+
+    return () => {
+      cancelled = true;
+    };
   }, [submission]);
 
   const scrollToTop = () => {
     messagesBegin.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleReply = (commentor) => {
-    if (replyRef && replyRef.id === commentor.id) {
-      setReplyRef("");
-    } else {
-      setReplyRef(commentor);
-      chatBox.current.focus();
-    }
-  };
+  const handleReply = useCallback((commentor) => {
+    setReplyRef(commentor);
+    chatBox.current.focus();
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
-    if (replyRef) {
-      snoo.getComment(replyRef.id).reply(reply);
-      setReply("");
-    } else {
-      // assume to thread
-      post.reply(reply);
-      setReply("");
-    }
-  };
-
-  const handleChange = () => {
-    onDelete(threadId);
-    onAdd(false);
   };
 
   const stopReply = () => {
+    if (reply !== "") {
+      // check if form was submitted
+      if (replyRef) {
+        // reply to comment
+        snoo.getComment(replyRef.id).reply(reply);
+        setReply("");
+      } else {
+        // assume reply is to thread
+        post.reply(reply);
+        setReply("");
+      }
+    }
     setReplyRef();
   };
 
@@ -67,7 +66,7 @@ const RedditTwitchChat = ({
       <div className="top-bar-wrapper">
         <div className="top-bar">
           <Tooltip content="Delete Discussion" direction="bottom">
-            <div className="rtc-trash" onClick={handleChange}>
+            <div className="rtc-trash" onClick={() => onDelete(threadId)}>
               <i className="fas fa-trash-alt" />
             </div>
           </Tooltip>
@@ -138,10 +137,11 @@ const RedditTwitchChat = ({
               }}
               onBlur={stopReply}
             />
-
-            <button type="submit" className="send-wrapper">
-              <i className="fas fa-paper-plane" />
-            </button>
+            <div className="send-wrapper">
+              <button type="submit" className="send">
+                <i className="fas fa-paper-plane" />
+              </button>
+            </div>
           </form>
         </div>
       </div>

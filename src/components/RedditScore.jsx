@@ -41,47 +41,53 @@ const RedditScore = ({ post, setPost, flex, snooPostRef }) => {
     });
     await snooPostRef.unvote();
   };
+
+  const ScoreBar = () => {
+    return (
+      <>
+        <div
+          className="comment-upvote"
+          onClick={async () => {
+            await upvote();
+          }}
+          style={
+            post.likes == null
+              ? { color: "#EFEFF1" }
+              : post.likes
+              ? { color: "#FF4500" }
+              : null
+          }
+        >
+          <i className="fas fa-arrow-up" />
+        </div>
+        <div className="comment-score-num">{post.score}</div>
+        <div
+          className="comment-downvote"
+          onClick={async () => await downvote()}
+          style={
+            post.likes == null
+              ? { color: "#EFEFF1" }
+              : !post.likes
+              ? { color: "#7193FF" }
+              : null
+          }
+        >
+          <i className="fas fa-arrow-down" />
+        </div>
+      </>
+    );
+  };
+
   return (
-    <div
-      className="score"
-      style={
-        flex === "column"
-          ? {
-              flexDirection: "column",
-            }
-          : { flexDirection: 'row'}
-      }
-    >
-      <div
-        className="comment-upvote"
-        onClick={async () => {
-          await upvote();
-        }}
-        style={
-          post.likes == null
-            ? { color: "#EFEFF1" }
-            : post.likes
-            ? { color: "#FF4500" }
-            : null
-        }
-      >
-        <i className="fas fa-arrow-up" />
-      </div>
-      <div className="comment-score-num">{post.score}</div>
-      <div
-        className="comment-downvote"
-        onClick={async () => await downvote()}
-        style={
-          post.likes == null
-            ? { color: "#EFEFF1" }
-            : !post.likes
-            ? { color: "#7193FF" }
-            : null
-        }
-      >
-        <i className="fas fa-arrow-down" />
-      </div>
-    </div>
+    <>
+      {flex === "column" ? (
+        <div className="score">
+          <ScoreBar />
+        </div>
+      ) : (
+        <ScoreBar />
+      )}
+    </>
   );
 };
 

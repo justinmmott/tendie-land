@@ -13,13 +13,21 @@ const RedditComment = ({ commentState, onReply, snoo, onHideStickied}) => {
   const [comment, setComment] = useState();
 
   useEffect(() => {
-    setComment(commentState);
+    let cancelled = false;
+    !cancelled && setComment(commentState);
+    return () => {
+      cancelled = true;
+    };
   }, [commentState]);
 
   useEffect(() => {
+    let cancelled = false;
     setTimeout(() => {
-      setShared(false);
+      !cancelled && setShared(false);
     }, 1000);
+    return () => {
+      cancelled = true;
+    };
   }, [shared]);
 
   const time = (t) => {

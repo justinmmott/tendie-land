@@ -18,14 +18,13 @@ const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {
 
   useImperativeHandle(ref, () => ({
     refresh() {
-      submissionRef.refresh();
-      getSubmission(submissionRef);
-    },
+        submissionRef.refresh();
+        getSubmission(submissionRef);
+  },
   }));
 
   useEffect(() => {
-    let isCancelled = false;
-    if (comments) setComments();
+    let cancelled = false;
 
     const wrapper = async () => {
       const tempSnoo = new snoowrap({
@@ -40,10 +39,10 @@ const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {
       await getSubmission(sub);
     };
 
-    if (!isCancelled) wrapper();
+    if (!cancelled) wrapper();
 
     return () => {
-      isCancelled = true;
+      cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId]);
@@ -98,6 +97,7 @@ const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {
       snoo={snoo}
       onDelete={onDelete}
       onAdd={onAdd}
+      threadId={threadId}
     />
   ) : (
     <Loader type="Oval" color="#69abed" className="loader" />

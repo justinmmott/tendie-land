@@ -99,8 +99,7 @@
   font-size: 1.7rem;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
   background-color: #2d2d2e;
-  color: #4fbcff
-
+  color: #4fbcff;
 }
 
 .scroll-to-top:hover {
@@ -128,13 +127,14 @@
 .chat-wrapper {
   margin-left: 10px;
   width: 100%;
-  display:flex;
+  display: flex;
   align-items: center;
   justify-content: space-evenly;
 }
 
 .chat-wrapper textarea {
   width: 90%;
+  min-height: 5vh;
   resize: none;
   -webkit-border-radius: 6px;
   -moz-border-radius: 6px;
@@ -153,9 +153,6 @@
 }
 
 .send-wrapper {
-  color: #efeff1;
-  background-color: transparent; 
-  border: none;
   width: 10%;
   height: 7vh;
   display: flex;
@@ -163,8 +160,22 @@
   justify-content: center;
 }
 
-.send-wrapper:hover {
+.send {
+  color: #efeff1;
+  background-color: transparent;
+  border: none;
+  min-height: 5vh;
+  width: 75%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.4);
+}
+
+.send:hover {
   cursor: pointer;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.4);
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */

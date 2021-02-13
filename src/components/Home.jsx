@@ -41,6 +41,7 @@ const Home = () => {
         ref: createRef(),
       },
     ]);
+    setAdd(false);
   };
 
   const handleDelete = (threadId) => {

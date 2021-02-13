@@ -1,22 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./../css/Tooltip.css";
 
 const Tooltip = (props) => {
-  let timeout;
   const [active, setActive] = useState(false);
+  const timeout = useRef();
 
   useEffect(() => {
-    if (props.shared != null && !props.shared) setActive(false);  
-  }, [active, props.shared])
+    let cancelled = false;
+    if (!cancelled && props.shared != null && !props.shared) setActive(false);
+    return () => {
+      cancelled = true;
+    };
+  }, [active, props.shared]);
 
   const showTip = () => {
-    timeout = setTimeout(() => {
+    timeout.current = setTimeout(() => {
       setActive(true);
     }, props.delay || 400);
   };
 
   const hideTip = () => {
-    clearInterval(timeout);
+    clearInterval(timeout.current);
     setActive(props.shared ? true : false);
   };
 
