@@ -11,6 +11,7 @@
 # production
 functions/build
 functions/.runtimeconfig.json
+functions/.ui-debug.log
 
 # secrets
 src/globals/secrets.js

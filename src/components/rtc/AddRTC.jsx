@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import './../css/AddRTC.css';
+import './../../css/rtc/AddRTC.css';
 
 const AddRTC = ({ onSubmitThread }) => {
   const [link, setLink] = useState("");

@@ -1,4 +1,4 @@
-import "./../css/RedditScore.css";
+import "./../../css/misc/RedditScore.css";
 
 const RedditScore = ({ post, setPost, flex, snooPostRef }) => {
   const upvote = async () => {

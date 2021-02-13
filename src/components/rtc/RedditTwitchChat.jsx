@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Loader from "react-loader-spinner";
 
-import RedditCommentsWrapper from "./RedditCommentsWrapper";
-import FixRedditHTML from "../scripts/FixRedditHTML";
-import RedditScore from "./RedditScore";
+import RedditCommentsWrapper from "./../comment/RedditCommentsWrapper";
+import FixRedditHTML from "./../../scripts/FixRedditHTML";
+import RedditScore from "./../misc/RedditScore";
 
-import "./../css/RedditTwitchChat.css";
-import Tooltip from "./Tooltip";
+import "./../../css/rtc/RedditTwitchChat.css";
+import Tooltip from "./../misc/Tooltip";
 
 const RedditTwitchChat = ({
   submission,

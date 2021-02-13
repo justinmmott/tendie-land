@@ -2,9 +2,9 @@ import React, { useEffect, useState, useRef, createRef } from "react";
 import matchAll from "match-all";
 import ls from "local-storage";
 
-import RTCWrapper from "./RTCWrapper";
+import RTCWrapper from "./rtc/RTCWrapper";
 import useInterval from "./hooks/Interval";
-import AddRTC from "./AddRTC";
+import AddRTC from "./rtc/AddRTC";
 
 import "./../css/Home.css";
 
@@ -26,7 +26,7 @@ const Home = () => {
     if (threadIds.length > 0) {
       if (index.current + 1 < threadIds.length) index.current++;
       else index.current = 0;
-      threadIds[index.current].ref.current?.refresh();
+      // threadIds[index.current].ref.current?.refresh();
     }
   }, 2000);
 

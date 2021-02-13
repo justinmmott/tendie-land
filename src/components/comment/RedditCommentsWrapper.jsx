@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import RedditComment from "./RedditComment";
 
-import "./../css/RedditCommentsWrapper.css";
+import "./../../css/comment/RedditCommentsWrapper.css";
 
 const RedditCommentsWrapper = ({ topLevel, comments, snoo, onReply }) => {
   const [hideSticky, setHideSticky] = useState(false);

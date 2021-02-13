@@ -6,7 +6,6 @@
 
 .comment {
   display: grid;
-  grid-template-columns: auto 16vh 2fr;
   grid-template-rows: auto;
   grid-template-areas:
     "author author author"

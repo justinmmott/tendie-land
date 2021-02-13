@@ -2,13 +2,13 @@ import React, { useState, useEffect } from "react";
 import copy from "copy-to-clipboard";
 
 import RedditCommentsWrapper from "./RedditCommentsWrapper";
-import FixRedditHTML from "../scripts/FixRedditHTML";
-import Tooltip from "./Tooltip";
-import RedditScore from "./RedditScore";
+import FixRedditHTML from "./../../scripts/FixRedditHTML";
+import Tooltip from "./../misc/Tooltip";
+import RedditScore from "./../misc/RedditScore";
 
-import "./../css/RedditComment.css";
+import "./../../css/comment/RedditComment.css";
 
-const RedditComment = ({ commentState, onReply, snoo, onHideStickied}) => {
+const RedditComment = ({ commentState, onReply, snoo, onHideStickied }) => {
   const [shared, setShared] = useState(false);
   const [comment, setComment] = useState();
 
@@ -43,7 +43,14 @@ const RedditComment = ({ commentState, onReply, snoo, onHideStickied}) => {
     <div className="comment-wrapper">
       <div className="comment-shadow">
         {comment && (
-          <div className="comment">
+          <div
+            className="comment"
+            style={
+              comment.stickied
+                ? { gridTemplateColumns: "auto 18vh 2fr" }
+                : { gridTemplateColumns: "auto 16vh 2fr" }
+            }
+          >
             <div className="comment-author">
               <div className="name-flair">
                 <div className="comment-author-name">

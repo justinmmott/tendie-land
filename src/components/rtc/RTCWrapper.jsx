@@ -6,8 +6,8 @@ import {
 } from "react";
 import snoowrap from "snoowrap";
 import Cookies from "js-cookie";
-import { clientId } from "../globals/globals";
-import RedditTwitchChat from "./RedditTwitchChat";
+import { clientId } from "../../globals/globals";
+import RedditTwitchChat from "./../rtc/RedditTwitchChat";
 import Loader from "react-loader-spinner";
 
 const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {

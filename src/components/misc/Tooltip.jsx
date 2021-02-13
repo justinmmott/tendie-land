@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./../css/Tooltip.css";
+import "./../../css/misc/Tooltip.css";
 
 const Tooltip = (props) => {
   const [active, setActive] = useState(false);
