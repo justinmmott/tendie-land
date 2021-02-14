@@ -4,7 +4,7 @@ import copy from "copy-to-clipboard";
 import RedditOAuth from "./RedditOAuth";
 import Home from "./Home";
 import About from "./About";
-import bitcoin from "./../Bitcoin.svg";
+import bitcoin from "./../Bitcoin.svg.png";
 import Tooltip from "./misc/Tooltip";
 
 import "./../css/App.css";
