@@ -26,7 +26,7 @@ const Home = () => {
     if (threadIds.length > 0) {
       if (index.current + 1 < threadIds.length) index.current++;
       else index.current = 0;
-      // threadIds[index.current].ref.current?.refresh();
+      threadIds[index.current].ref.current?.refresh();
     }
   }, 2000);
 

@@ -73,6 +73,11 @@
   font-size: 1.3rem;
 }
 
+.post-selftext img {
+  width: 100%;
+  object-fit: cover;
+}
+
 .post-comments-wrapper {
   padding: 0 10px 0 10px;
   margin-bottom: 15px;

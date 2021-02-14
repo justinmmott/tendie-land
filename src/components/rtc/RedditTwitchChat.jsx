@@ -91,12 +91,18 @@ const RedditTwitchChat = ({
           </div>
           <div className="post">
             <div className="post-name">{post.title}</div>
-            <div
-              className="post-selftext"
-              dangerouslySetInnerHTML={{
-                __html: FixRedditHTML(post.selftext_html),
-              }}
-            />
+            {post.selftext_html == null ? (
+              <div className="post-selftext">
+                <img src={post.preview.images[0].source.url} alt={post.title}/>
+              </div>
+            ) : (
+              <div
+                className="post-selftext"
+                dangerouslySetInnerHTML={{
+                  __html: FixRedditHTML(post.selftext_html),
+                }}
+              />
+            )}
           </div>
         </div>
         <div className="post-comments-wrapper" ref={messagesBegin}>
