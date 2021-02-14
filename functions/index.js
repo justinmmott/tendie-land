@@ -30,6 +30,10 @@ app.get("/login", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "app-index.html"));
 });
 
+app.get("/about", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "app-index.html"));
+});
+
 app.get("/authorize_callback", (req, res) => {
   const code = req.query.code;
   const base64encodedData = Buffer.from(clientId + ":").toString("base64");
