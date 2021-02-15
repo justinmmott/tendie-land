@@ -11,6 +11,15 @@ import "./../css/App.css";
 
 const App = () => {
   const [shared, setShared] = useState(false);
+  const [analytics, setAnalytics] = useState();
+
+  useEffect(()=>{
+    let cancelled = false;
+    setAnalytics(!cancelled ? window.firebase.analytics() : null);
+    return () => {
+      cancelled = true;
+    };
+  },[])
 
   useEffect(() => {
     let cancelled = false;
@@ -35,7 +44,7 @@ const App = () => {
         ) : getURLPath() === "/about" ? (
           <About />
         ) : (
-          <Home />
+          <Home analytics={analytics}/>
         )}
         <div className="donation">
           {getURLPath() !== "/about" ? (

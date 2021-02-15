@@ -1,10 +1,11 @@
 import "./../../css/misc/RedditScore.css";
 
-const RedditScore = ({ post, setPost, flex, snooPostRef }) => {
+const RedditScore = ({ post, setPost, flex, snooPostRef, analytics }) => {
   const upvote = async () => {
     const likes = post.likes;
     const score = post.score;
     if (!likes) {
+      if (analytics) analytics.logEvent("upvote");
       setPost({
         ...post,
         likes: true,
@@ -20,6 +21,7 @@ const RedditScore = ({ post, setPost, flex, snooPostRef }) => {
     const likes = post.likes;
     const score = post.score;
     if (likes == null || likes) {
+      if (analytics) analytics.logEvent("downvote");
       setPost({
         ...post,
         likes: false,
@@ -32,6 +34,7 @@ const RedditScore = ({ post, setPost, flex, snooPostRef }) => {
   };
 
   const unvote = async () => {
+    if (analytics) analytics.logEvent("unvote");
     const likes = post.likes;
     const score = post.score;
     setPost({

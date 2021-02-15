@@ -15,6 +15,7 @@ const RedditTwitchChat = ({
   onDelete,
   onAdd,
   threadId,
+  analytics,
 }) => {
   const [replyRef, setReplyRef] = useState();
   const [reply, setReply] = useState("");
@@ -33,12 +34,15 @@ const RedditTwitchChat = ({
   }, [submission]);
 
   const scrollToTop = () => {
+    if (analytics) analytics.logEvent("scrollToTop");
     messagesBegin.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleReply = useCallback((commentor) => {
+    if (analytics) analytics.logEvent("startReply");
     setReplyRef(commentor);
     chatBox.current.focus();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleSubmit = (event) => {
@@ -49,11 +53,13 @@ const RedditTwitchChat = ({
     if (reply !== "") {
       // check if form was submitted
       if (replyRef) {
+        if (analytics) analytics.logEvent("replyToComment");
         // reply to comment
         snoo.getComment(replyRef.id).reply(reply);
         setReply("");
       } else {
         // assume reply is to thread
+        if (analytics) analytics.logEvent("replyToThread");
         post.reply(reply);
         setReply("");
       }
@@ -87,6 +93,7 @@ const RedditTwitchChat = ({
               post={post}
               setPost={setPost}
               snooPostRef={post}
+              analytics={analytics}
             />
           </div>
           <div className="post">
@@ -118,6 +125,7 @@ const RedditTwitchChat = ({
             topLevel={true}
             onReply={handleReply}
             snoo={snoo}
+            analytics={analytics}
           />
         </div>
       </div>

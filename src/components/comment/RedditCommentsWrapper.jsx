@@ -4,10 +4,11 @@ import RedditComment from "./RedditComment";
 
 import "./../../css/comment/RedditCommentsWrapper.css";
 
-const RedditCommentsWrapper = ({ topLevel, comments, snoo, onReply }) => {
+const RedditCommentsWrapper = ({ topLevel, comments, snoo, onReply, analytics }) => {
   const [hideSticky, setHideSticky] = useState(false);
 
   const handleHideStickied = () => {
+    if (analytics) analytics.logEvent("hideSticky");
     setHideSticky(!hideSticky);
   };
 
@@ -23,6 +24,7 @@ const RedditCommentsWrapper = ({ topLevel, comments, snoo, onReply }) => {
                   onReply={onReply}
                   snoo={snoo}
                   onHideStickied={handleHideStickied}
+                  analytics={analytics}
                 />
               )}
             </div>
@@ -33,6 +35,7 @@ const RedditCommentsWrapper = ({ topLevel, comments, snoo, onReply }) => {
               commentState={comment}
               onReply={onReply}
               snoo={snoo}
+              analytics={analytics}
             ></RedditComment>
           ))}
     </div>

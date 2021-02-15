@@ -10,7 +10,7 @@ import { clientId } from "../../globals/globals";
 import RedditTwitchChat from "./../rtc/RedditTwitchChat";
 import Loader from "react-loader-spinner";
 
-const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {
+const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd, analytics }, ref) => {
   const [comments, setComments] = useState();
   const [submission, setSubmission] = useState();
   const [snoo, setSnoo] = useState();
@@ -51,6 +51,7 @@ const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {
     try {
       sub = await sub.fetch();
     } catch (err) {
+      if (analytics) analytics.logEvent("sessionExpired");
       Cookies.remove("__session");
       alert("Session ended log-in again");
       window.location.href = "https://tendie.land";
@@ -98,6 +99,7 @@ const RTCWrapper = forwardRef(({ threadId, onDelete, onAdd }, ref) => {
       onDelete={onDelete}
       onAdd={onAdd}
       threadId={threadId}
+      analytics={analytics}
     />
   ) : (
     <Loader type="Oval" color="#69abed" className="loader" />

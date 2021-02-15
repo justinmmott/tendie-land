@@ -8,19 +8,24 @@ import AddRTC from "./rtc/AddRTC";
 
 import "./../css/Home.css";
 
-const Home = () => {
+const Home = ({ analytics }) => {
   const [threadIds, setThreadIds] = useState([]);
   const [add, setAdd] = useState(false);
   const index = useRef(0);
   const first = useRef(true);
 
   useEffect(() => {
+    if (analytics) analytics.logEvent("login");
+  }, [analytics]);
+
+  useEffect(() => {
+    if (analytics) analytics.logEvent("newThread");
     if (first.current) {
       setThreadIds(ls.get("threadIds") || []);
       first.current = false;
     }
     ls.set("threadIds", threadIds);
-  }, [threadIds]);
+  }, [threadIds, analytics]);
 
   useInterval(() => {
     if (threadIds.length > 0) {
@@ -64,6 +69,7 @@ const Home = () => {
                 threadId={threadId.id}
                 onDelete={handleDelete}
                 onAdd={handleAdd}
+                analytics={analytics}
               />
             ))}
             {add && threadIds.length < 2 ? (
@@ -72,7 +78,7 @@ const Home = () => {
           </>
         </div>
       ) : (
-        <AddRTC onSubmitThread={handleSubmitThread}/>
+        <AddRTC onSubmitThread={handleSubmitThread} />
       )}
     </div>
   );

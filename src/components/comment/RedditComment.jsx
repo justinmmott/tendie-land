@@ -8,7 +8,13 @@ import RedditScore from "./../misc/RedditScore";
 
 import "./../../css/comment/RedditComment.css";
 
-const RedditComment = ({ commentState, onReply, snoo, onHideStickied }) => {
+const RedditComment = ({
+  commentState,
+  onReply,
+  snoo,
+  onHideStickied,
+  analytics,
+}) => {
   const [shared, setShared] = useState(false);
   const [comment, setComment] = useState();
 
@@ -32,10 +38,14 @@ const RedditComment = ({ commentState, onReply, snoo, onHideStickied }) => {
 
   const time = (t) => {
     let res = "";
+    let hours = false;
     let m = Math.floor((Math.floor(Date.now() / 1000) - t) / 60);
-    if (m > 59) m = Math.floor(m / 60);
+    if (m > 59) {
+      hours = true;
+      m = Math.floor(m / 60);
+    }
     if (m === 0) res = "Now";
-    else res = `${m}m`;
+    else res = `${m}${hours ? 'h' : 'm'}`;
     return res;
   };
 
@@ -79,6 +89,7 @@ const RedditComment = ({ commentState, onReply, snoo, onHideStickied }) => {
                 post={comment}
                 setPost={setComment}
                 snooPostRef={snoo.getComment(comment.id)}
+                analytics={analytics}
               />
               <div
                 className="reply"
@@ -99,6 +110,7 @@ const RedditComment = ({ commentState, onReply, snoo, onHideStickied }) => {
                 <div
                   className="share"
                   onClick={() => {
+                    if (analytics) analytics.logEvent("Shared");
                     setShared(true);
                     copy(`https://www.reddit.com${comment.permalink}`);
                   }}
@@ -125,6 +137,7 @@ const RedditComment = ({ commentState, onReply, snoo, onHideStickied }) => {
                 comments={comment.replies}
                 onReply={onReply}
                 snoo={snoo}
+                analytics={analytics}
               />
             </div>
           </div>
