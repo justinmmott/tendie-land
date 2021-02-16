@@ -13,13 +13,13 @@ const App = () => {
   const [shared, setShared] = useState(false);
   const [analytics, setAnalytics] = useState();
 
-  useEffect(()=>{
+  useEffect(() => {
     let cancelled = false;
     setAnalytics(!cancelled ? window.firebase.analytics() : null);
     return () => {
       cancelled = true;
     };
-  },[])
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +44,7 @@ const App = () => {
         ) : getURLPath() === "/about" ? (
           <About />
         ) : (
-          <Home analytics={analytics}/>
+          <Home analytics={analytics} />
         )}
         <div className="donation">
           {getURLPath() !== "/about" ? (
@@ -59,8 +59,20 @@ const App = () => {
             rel="noreferrer"
           >
             Patreon
-          </a>{" "}
-          or with{"  "}
+          </a>
+          ,{" "}
+          <a
+            className="coffee"
+            href="https://www.buymeacoffee.com/jmott"
+            target="_blank"
+            rel="noreferrer"
+          >
+            <img
+              src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+              alt="Buy Me A Coffee"
+            />
+          </a>
+          , or{" "}
           <Tooltip
             content="Wallet address copied to clipboard"
             direction="top"

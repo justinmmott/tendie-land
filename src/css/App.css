@@ -21,3 +21,10 @@
 .donation img:hover {
   cursor: pointer;
 }
+
+.coffee img{
+  width: 6vw;
+  height: 2.2vh;
+  border-radius: 3px;
+  object-fit: cover;
+}
