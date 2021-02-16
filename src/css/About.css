@@ -3,5 +3,7 @@
     text-align: left;
     width: 80%;
     height: 95vh;
-    font-size: 1.7rem;
+    font-size: 1.45rem;
+    overflow: scroll;
+    scrollbar-width: none;
 }
